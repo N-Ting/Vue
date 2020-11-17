@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <div>{{msg}}</div>
+    <div>
+      <input type="text" v-model='msg'>
+    </div>
+  </div>
+  <script src="/js/vue.js"></script>
+  <script>
+
+    /* 
+     v-once的应用场景：如果显示的信息后续不需要再修改，可以使用v-once，可以提高性能
+    */
+    //实例化Vue对象
+    let vm = new Vue({
+      //用于告诉Vue放在哪个容器里
+      el: '#app',//元素的挂载位置（值可以是css选择器或者DOM元素）
+      //填充的数据
+      data: { //模型对象（值是一个对象）
+        msg: 'Hello Vue',
+      }
+    })
+  </script>
+</body>
+
+</html>

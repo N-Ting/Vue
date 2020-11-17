@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 插值表达式 -->
+    <div>{{msg}}</div>
+    <div>{{1+2}}</div>
+    <div>{{msg +'-------'+ 12}}</div>
+    <p>{{msg.split('').reverse().join('')}}</p>
+    <p>{{one}}</p>
+    <p>{{one.length>18?'大于8':'小于18'}}</p>
+    <span>{{two}}</span>
+  </div>
+  <script src="/js/vue.js"></script>
+  <script>
+    //实例化Vue对象
+    let vm = new Vue({
+      //用于告诉Vue放在哪个容器里
+      el: '#app',//元素的挂载位置（值可以是css选择器或者DOM元素）
+      //填充的数据
+      data: { //模型对象（值是一个对象）
+        msg: 'Hello Vue',
+        one: '小可爱你好好看',
+        two: '刘憨憨你傻'
+      }
+    })
+  </script>
+</body>
+
+</html>

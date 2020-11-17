@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="app">
+    <!-- 存在闪动 -->
+    <div>{{msg}}</div>
+    <!-- 不存在闪动 -->
+    <!-- 指令对应的值，会去data里面去查找，不需要加{{}} -->
+    <div v-text='msg'></div>
+    <!-- 如果想显示普通的字符串，需要加引号 -->
+    <div v-text='"msg"'></div>
+    <!-- 会解析HTML标签，注意内容不能是第三方提供的，可能导致xss攻击 -->
+    <div v-html='msg1'></div>
+    <div v-pre>{{msg}}</div>
+  </div>
+  <script src="/js/vue.js"></script>
+  <script>
+    let vm = new Vue({
+      //用于告诉Vue放在哪个容器里
+      el: '#app',//元素的挂载位置（值可以是css选择器或者DOM元素）
+      //填充的数据
+      data: { //模型对象（值是一个对象）
+        msg: 'Hello Vue',
+        msg1: '<img src="xxx" onerror="alert(1)"/>'
+      }
+    })
+  </script>
+</body>
+
+</html>

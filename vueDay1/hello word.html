@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    [v-cloak] {
+      display: none;
+
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div v-cloak> {{msg}}</div>
+    <div v-text='msg'></div>
+    <div v-html='msg1'></div>
+    <div v-pre>{{msg}}</div>
+    <div v-once>{{info}}</div>
+  </div>
+  <script src="/js/vue.js"></script>
+  <script type="text/javascript">
+    /*
+      Vue的基本使用步骤
+      1.需要提供标签用于填充数据
+      2.引用vue.js库文件
+      3.可以使用vue的语法做功能了
+      4.把vue提供的数据填充到标签里面
+
+      v-clock是用来解决插值表达式中产生的闪动
+      1.提供样式
+      [v-cloak] {
+        display: none;
+      }
+      2.在插值表达式所在的标签中添加v-cloak指令
+      原理：先通过样式隐藏内容，然后在内存中进行值得替换，替换好之后再显示最终的结果
+      v-once的应用场景：如果显示的信息后续不需要再修改，可以使用v-once，这样可以提高性能
+     */
+    //创建一个vue实例
+    let vm = new Vue({
+      el: '#app',
+      data: {
+        msg: 'hello word',
+        msg1: '<h1 style="color:red">Hello</h1>',
+        info: '你好'
+      }
+    })
+  </script>
+</body>
+
+</html>
