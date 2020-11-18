@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div v-if='score>=90'>优秀</div>
+        <div v-else if='score<90 && score>=80'>良好</div>
+        <div v-else if='score<80 && score>=70'>一般</div>
+        <div v-else if='score<70 && score>=60'>及格</div>
+        <div v-else='score<60'>不及格</div>
+        <!-- v-show的原理：控制元素是否显示 display:none -->
+        <div v-show='flag'>测试v-show</div>
+        <button @click='change'>切换</button>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                score: 50,
+                flag: false
+            },
+            methods: {
+                change() {
+                    this.flag = !this.flag
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

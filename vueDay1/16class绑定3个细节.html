@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <style>
+        .active {
+            border: 1px solid red;
+            width: 100px;
+            height: 100px;
+        }
+
+        .error {
+            background-color: orange;
+        }
+
+        .text {
+            font-size: 28px;
+        }
+
+        .base {
+            color: pink;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div :class='[activeClass,errorClass,{text:isText}]'>测试</div>
+        <div :class='arrClasses'>测试1</div>
+        <div :class='objClasses'>测试2</div>
+        <div class='base' :class='{text:isText}'>测试3</div>
+        <button @click='change'>切换</button>
+    </div>
+    <script>
+        /* 
+            样式绑定相关语法细节
+            1、 对象绑定和数组绑定可以结合使用
+            2、class绑定的值可以简化操作
+            3、默认的class如何处理？默认的classs会保留
+         */
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                activeClass: 'active',
+                errorClass: 'error',
+                isText: true,
+                arrClasses: ['active', 'error'],
+                objClasses: {
+                    active: true,
+                    error: true
+                }
+            },
+            methods: {
+                change() {
+                    // this.arrClasses = ''
+                    this.objClasses.error = false
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

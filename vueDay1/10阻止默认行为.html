@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- @click.prevent.self会阻止默认行为，无论是点击自己还是点击儿子都会阻止 -->
+        <!-- @click.self.prevent只会阻止点击自己时的默认行为，点击儿子时还是会触发 -->
+        <a href="https://www.baidu.com" @click.prevent.self>
+            百度
+            <div style="border: 1px solid red;">百度里面的div</div>
+        </a>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            data: {
+
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- <ul>
+            <li v-for='(value,index) in "hello word"'>{{value +'-----'+index}}</li>
+        </ul> -->
+        <!-- <ul>
+            <li v-for='(value,index) in 10'>{{value +'-----'+index}}</li>
+        </ul> -->
+        <ul>
+            <li v-if='v==13' v-for='(v,k,i) in obj'>{{v+'----'+k+'----'+i}}</li>
+        </ul>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                obj: {
+                    uname: 'zhangsan',
+                    age: 13,
+                    gender: 'female'
+                }
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

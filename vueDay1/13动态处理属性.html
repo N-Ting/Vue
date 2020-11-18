@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <a v-bind:href="url">百度</a>
+        <a :href="url">百度1</a>
+        <button @click='handle'>切换</button>
+
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                url: 'http://www.baidu.com',
+            },
+            methods: {
+                handle() {
+                    this.url = 'http://itcast.cn'
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
