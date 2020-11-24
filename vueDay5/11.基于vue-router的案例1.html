@@ -114,18 +114,20 @@
       background-color: #ddd;
     }
   </style>
-  <!-- 引入js文件 -->
+  <!-- 引入相关文件 -->
   <script src="js/vue_2.5.22.js"></script>
   <script src="js/vue-router_3.0.2.js"></script>
 </head>
 
 <body>
-  <div id='app'>
-    <!-- 路由占位符 -->
+  <div id="app">
+    <!-- 路由的占位符 -->
     <router-view></router-view>
   </div>
   <script>
+    // 定义根组件
     const App = {
+      //在模板中渲染内容
       template: `
       <div>
     <!-- 头部区域 -->
@@ -135,7 +137,7 @@
       <!-- 左侧菜单栏 -->
       <div class="content left">
         <ul>
-          <li><router-link to="/user">用户管理</router-link></li>
+          <li><router-link to="/users">用户管理</router-link></li>
           <li><router-link to="/rights">权限管理</router-link></li>
           <li><router-link to="/goods">商品管理</router-link></li>
           <li><router-link to="/orders">订单管理</router-link></li>
@@ -154,104 +156,111 @@
   </div>
       `
     }
-    //创建子组件
+    // 抽离用户管理组件
     const User = {
       data() {
         return {
-          //定义一个存储用户信息的数组
-          userInfo: [
-            { id: 1, uname: '李四', age: 20 },
-            { id: 2, uname: '张三', age: 18 },
-            { id: 3, uname: '王五', age: 16 },
-            { id: 4, uname: '刘傻傻', age: 69 }
+          userlist: [
+            { id: 1, name: '李四', age: 18 },
+            { id: 2, name: '王五', age: 3 },
+            { id: 3, name: '张三', age: 1 },
+            { id: 4, name: '赵六', age: 30 },
           ]
         }
       },
-      template: `
-        <div>
-          <h1>User 用户管理</h1>
-          <table>
-                <thead>
-                <tr><th>编号</th><th>姓名</th><th>年龄</th><th>操作</th></tr>
-                </thead>
-                <tbody>
-                    <tr :key='item.id' v-for='item in userInfo'>
-                    <td>{{item.id}}</td>
-                    <td>{{item.uname}}</td>
-                    <td>{{item.age}}</td>
-                    <td><a href="javascript:;" @click='goUser(item.id)'>详情</a></td>
-                   </tr>
-                </tbody>
-          </table>
-        </div>
-      `,
       methods: {
-        goUser(id) {
-          //用编程的方式控制路由的跳转
-          this.$router.push('/userInfo/' + id)
+        //点击详情时跳转到用户详情也得处理函数
+        goDetail(id) {
+          // console.log(id);
+          //拿到id后，通过id跳转到指定用户得详情页,用编程得方式控制路由跳转
+          this.$router.push('/userinfo/' + id)
         }
-      }
+      },
+      template: `
+      <div>
+        <h1>用户管理区域</h1>
+      <table>
+          <thead>
+            <tr><th>编号</th><th>姓名</th><th>年龄</th><th>操作</th></tr>
+          </thead>
+          <tbody>
+          <tr :key='item.id' v-for='item in userlist'>
+          <td>{{item.id}}</td>
+          <td>{{item.name}}</td>
+          <td>{{item.age}}</td>
+          <td><a href="javascript:;" @click="goDetail(item.id)">详情</a></td>
+          </tr>
+          </tbody>
+      </table>
+      </div>
+      `
     }
+    // 抽离用户详情组件
     const UserInfo = {
       props: ['id'],
       template: `
-        <div>
-          <h1>用户详情页----用户ID：{{id}}</h1>
-          <button @click="goback()">后退</button>  
-        </div>    
+      <div>
+      <h5>用户详情页----用户ID为:{{id}}</h5>
+      <button @click="goback()">后退</button>
+      </div>
       `,
       methods: {
+        // 点击后退按钮时后退到前一页
         goback() {
-          //用编程的方式控制路由的后退
           this.$router.go(-1)
         }
       }
     }
     const Right = {
       template: `
-        <h1>Right 权限管理</h1>
+      <h1>权限管理区域</h1>
       `
     }
     const Good = {
       template: `
-        <h1>Good 商品管理</h1>
+      <h1>商品管理区域</h1>
       `
     }
     const Order = {
       template: `
-        <h1>Order 订单管理</h1>
+      <h1>订单管理区域</h1>
       `
     }
     const Setting = {
       template: `
-        <h1>Setting 系统设置</h1>
+      <h1>系统管理区域</h1>
       `
     }
-    //创建路由实例
+    // 实例化路由
     const router = new VueRouter({
       //配置路由规则
       routes: [
         {
+          // 当路径为/时，匹配组件为App的
           path: '/',
           component: App,
-          redirect: '/user',
+          // 重定向，页面打开显示/users
+          redirect: '/users',
+          // 外面的根组件是一直存在，要改变的是children子组件
           children: [
-            { path: '/user/', component: User },
-            { path: 'userInfo/:id', component: UserInfo, props: true },
+            // 当路径为/users，匹配的组件为User
+            { path: '/users', component: User },
+            //props被设置为 true，route.params将会被设置为组件属性
+            { path: '/userinfo/:id', component: UserInfo, props: true },
             { path: '/rights', component: Right },
             { path: '/goods', component: Good },
             { path: '/orders', component: Order },
-            { path: '/settings', component: Setting }
+            { path: '/settings', component: Setting },
           ]
         }
       ]
     })
-    //实例化Vue对象
+    //实例化Vue
     const vm = new Vue({
       el: '#app',
       data: {},
-      //挂载路由
-      router
+      // 挂载路由
+      router,
     })
   </script>
 </body>
