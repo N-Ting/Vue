@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <alert-box>有bug发生</alert-box>
+        <alert-box>周蜜老姐姐</alert-box>
+    </div>
+    <script>
+        /* 
+            组件插槽
+         */
+        Vue.component('alert-box', {
+            template: `
+             <div>
+                <strong>Error:</strong>
+                <slot></slot>
+             </div>
+             `
+        })
+        const vm = new Vue({
+            el: '#app',
+            data: {
+
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

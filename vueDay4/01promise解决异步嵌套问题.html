@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        // 构造函数使用，需要new一下
+        // 接收的参数是一个函数，函数又有两个参数
+        const p = new Promise((resolve, reject) => {
+            setTimeout(() => {
+                if (Math.random() >= 0.5) {
+                    resolve('刘憨憨')
+                } else {
+                    reject('刘皓东')
+                }
+            }, 1000)
+        })
+        p.then(data => {
+            console.log(data);
+        }, err => {
+            console.log(err);
+        })
+    </script>
+</body>
+
+</html>

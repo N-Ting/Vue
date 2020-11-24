@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <style type="text/css">
+        .container {}
+
+        .container .cart {
+            width: 300px;
+            /*background-color: lightgreen;*/
+            margin: auto;
+        }
+
+        .container .title {
+            background-color: lightblue;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            /*color: #fff;*/
+        }
+
+        .container .total {
+            background-color: #FFCE46;
+            height: 50px;
+            line-height: 50px;
+            text-align: right;
+        }
+
+        .container .total button {
+            margin: 0 10px;
+            background-color: #DC4C40;
+            height: 35px;
+            width: 80px;
+            border: 0;
+        }
+
+        .container .total span {
+            color: red;
+            font-weight: bold;
+        }
+
+        .container .item {
+            height: 55px;
+            line-height: 55px;
+            position: relative;
+            border-top: 1px solid #ADD8E6;
+        }
+
+        .container .item img {
+            width: 45px;
+            height: 45px;
+            margin: 5px;
+        }
+
+        .container .item .name {
+            position: absolute;
+            width: 90px;
+            top: 0;
+            left: 55px;
+            font-size: 16px;
+        }
+
+        .container .item .change {
+            width: 100px;
+            position: absolute;
+            top: 0;
+            right: 50px;
+        }
+
+        .container .item .change a {
+            font-size: 20px;
+            width: 30px;
+            text-decoration: none;
+            background-color: lightgray;
+            vertical-align: middle;
+        }
+
+        .container .item .change .num {
+            width: 40px;
+            height: 25px;
+        }
+
+        .container .item .del {
+            position: absolute;
+            top: 0;
+            right: 0px;
+            width: 40px;
+            text-align: center;
+            font-size: 40px;
+            cursor: pointer;
+            color: red;
+        }
+
+        .container .item .del:hover {
+            background-color: orange;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <my-cart></my-cart>
+        </div>
+    </div>
+    <script>
+        /* 
+            组件
+         */
+        let CartTitle = {
+            // 通过props来接收父组件的值
+            props: ['uname'],
+            template: `<div class="title">{{uname}}商品</div>`
+        }
+        let CartList = {
+            // 通过props来接受父组件的值
+            props: ['list'],
+            // 通过v-for的方式来遍历list里面的数据，绑定唯一的值id
+            // 通过动态绑定value属性的方式，直接将value值显示出来，将数据每一条数据的num传入
+            //blur失去焦点时，调用changeNum这个事件处理函数，触发事件时，可以将事件对象传递过来
+            //给减号和加号设置点击事件，并且阻止a标签得默认行为（跳转）,将id传入
+            template: `  <div>
+          <div :key='item.id' v-for='item in list' class="item">
+            <img :src="item.img"/>
+            <div class="name"></div>
+            <div class="change">
+              <a href="" @click.prevent='sub(item.id)'>－</a>
+              <input type="text" class="num" :value='item.num' @blur='changeNum(item.id,$event)'/>
+              <a href="" @click.prevent='add(item.id)'>＋</a>
+            </div>
+            <div class="del" @click='del(item.id)'>×</div>
+          </div>
+        </div>`,//点击del按钮，调用del方法，将数据的id值作为实参传入,
+            methods: {
+                // 失去焦点时，触发changeNum这个事件处理函数
+                changeNum: function (id, e) {
+                    // 因为不要在子组件里面修改父组件的数据，所以调用时，要将id值传过来
+                    // console.log(id, e.target.value);
+                    // 通过自定义事件的方式，将值传给父组件
+                    // 这里的this指的是input
+                    // 因为需要传递两个参数，所以以对象的形式传入
+                    this.$emit('change-num', {
+                        id: id,//这里的id是穿过来的形参id
+                        //区分传入的类型
+                        type: 'change',
+                        num: e.target.value//表示的事件对象的值
+                    })
+                },
+                sub: function (id) {
+                    // 通过自定义事件，将值传给父组件
+                    this.$emit('change-num', {
+                        id: id,
+                        type: 'sub'
+                    })
+                },
+                add: function (id) {
+                    // 通过自定义事件，将值传给父组件
+                    this.$emit('change-num', {
+                        id: id,
+                        //区分传入的类型
+                        type: 'add'
+                    })
+                },
+                // del为一个事件处理函数
+                // 通过del这个方法将id值传入
+                del: function (id) {
+                    // console.log(id);
+                    // 通过$emit()将id值传给父组件，通过自定义事件，cart-del为自己命名的
+                    this.$emit('cart-del', id)
+                }
+            }
+        }
+        let CartTotal = {
+            //使用props来接受父组件中的数据
+            //使用插值将总价渲染上去
+            props: ['list'],
+            template: `<div class="total">
+          <span>总价：{{total}}</span>
+          <button>结算</button>
+        </div>`,
+            computed: {
+                total: function () {
+                    // 计算商品的总价
+                    var t = 0;
+                    //遍历list数组，拿到每一条数据，再用数据的价格*数量，进行累加，就可以算出总价
+                    this.list.forEach(item => {
+                        t += item.price * item.num;
+                    });
+                    //将总价返回
+                    return t;
+                }
+            }
+        }
+        Vue.component('my-cart', {
+            data: function () {
+                return {
+                    uname: 'N-Ting',
+                    list: [{
+                        id: 1,
+                        name: 'TCL彩电',
+                        price: 1000,
+                        num: 1,
+                        img: 'img/a.jpg'
+                    }, {
+                        id: 2,
+                        name: '机顶盒',
+                        price: 1000,
+                        num: 1,
+                        img: 'img/b.jpg'
+                    }, {
+                        id: 3,
+                        name: '海尔冰箱',
+                        price: 1000,
+                        num: 1,
+                        img: 'img/c.jpg'
+                    }, {
+                        id: 4,
+                        name: '小米手机',
+                        price: 1000,
+                        num: 1,
+                        img: 'img/d.jpg'
+                    }, {
+                        id: 5,
+                        name: 'PPTV电视',
+                        price: 1000,
+                        num: 2,
+                        img: 'img/e.jpg'
+                    }]
+
+                }
+            },
+            //通过动态绑定属性的方式来传递给子组件。例如list，$event为自定义事件传过来的第二个参数
+            template: `<div class='cart'>
+                <cart-title :uname='uname'></cart-title>
+                <cart-list :list='list' @cart-del='delCart($event)' @change-num='changeNum($event)'></cart-list>
+                <cart-total :list='list'></cart-total>
+                </div>
+            `,
+            components: {
+                'cart-title': CartTitle,
+                'cart-list': CartList,
+                'cart-total': CartTotal
+            },
+            methods: {
+                // 修改num的处理函数,将对象以实参的方式传递过来，用val值接收
+                changeNum: function (val) {
+                    // console.log(val);
+                    //    如果传过来的类型为change
+                    if (val.type == 'change`') {
+                        // 根据子组件传递过来的数据，更新list里面对应得数据
+                        //遍历list
+                        this.list.some(item => {
+                            //判断list里每一条数据得id是否与val.id里箱等
+                            if (item.id == val.id) {
+                                //相等得话就将val.num赋值给item里得num
+                                item.num = val.num
+                                // some只要找到了一条满足得条件就终止循环
+                                return true
+                            }
+                        })
+
+                    } else if (val.type == 'sub') {
+                        //遍历list
+                        this.list.some(item => {
+                            //判断list里每一条数据得id是否与val.id里箱等
+                            if (item.id == val.id) {
+                                //相等得话就将val.num的值减1
+                                item.num -= 1
+                                // some只要找到了一条满足得条件就终止循环
+                                return true
+                            }
+                        })
+                    } else {
+                        //遍历list
+                        this.list.some(item => {
+                            //判断list里每一条数据得id是否与val.id里箱等
+                            if (item.id == val.id) {
+                                //相等得话就将val.num的值加1
+                                item.num += 1
+                                // some只要找到了一条满足得条件就终止循环
+                                return true
+                            }
+                        })
+                    }
+
+                },
+                //删除的事件处理函数
+                delCart: function (id) {
+                    // 根据id删除list里面的数据
+                    //找到list里面的id所在对应数据得索引
+                    let index = this.list.findIndex(item => {
+                        // 如果传过来的id赋值给数据中的id，并且返回
+                        return item.id = id
+                    })
+                    // 根据索引删除对于应数据
+                    // splice(index,1)第一个参数表示要删除的索引，第二个人参数表示要删除几个
+                    //删除数组中index，删除一条数据
+                    this.list.splice(index, 1)
+                }
+            }
+        })
+        const vm = new Vue({
+            el: '#app',
+            data: {
+
+            },
+
+        })
+    </script>
+</body>
+
+</html>

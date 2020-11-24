@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <input type="text" v-myfocus>
+    </div>
+    <script>
+        /* 
+            自定义指令
+         */
+        //  myfocus是可以随便命名的
+        Vue.directive('myfocus', {
+            inserted: function (el) {
+                //el表示指令所绑定的元素,v-myfocus写在哪里，el就表示哪个元素，这里表示input
+                //el插入到了他的父级，父级已经存在的时候触发
+                // el.focus()表示元素里的焦点事件
+                console.log(el.parentNode);
+                el.focus()
+            }
+        })
+        const vm = new Vue({
+            el: '#app',
+            data: {
+
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style type="text/css">
+    .grid {
+      margin: auto;
+      width: 530px;
+      text-align: center;
+    }
+
+    .grid table {
+      border-top: 1px solid #C2D89A;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .grid th,
+    td {
+      padding: 10;
+      border: 1px dashed #F3DCAB;
+      height: 35px;
+      line-height: 35px;
+    }
+
+    .grid th {
+      background-color: #F3DCAB;
+    }
+
+    .grid .book {
+      padding-bottom: 10px;
+      padding-top: 5px;
+      background-color: #F3DCAB;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="grid">
+      <div>
+        <h1>图书管理</h1>
+        <div class="book">
+          <div>
+            <label for="id">
+              编号：
+            </label>
+            <input type="text" id="id" v-model='id' :disabled='flag' v-focus>
+            <label for="name">
+              名称：
+            </label>
+            <input type="text" id="name" v-model='name'>
+            <button @click='handle' :disabled='subString'>提交</button>
+          </div>
+        </div>
+        <!-- total为计算属性，所以不需要加() -->
+        <div>{{total}}</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>编号</th>
+            <th>名称</th>
+            <th>时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr :key='item.id' v-for='item in books'>
+            <td>{{item.id}}</td>
+            <td>{{item.name}}</td>
+            <td>{{item.date | format('yyyy-mm-dd hh:mm:ss')}}</td>
+            <td>
+              <!-- 通过flag来动态判断是true（禁用）还是false（可以编辑） -->
+              <a href="" @click.prevent='Edit(item.id,item.name)'>修改</a>
+              <span>|</span>
+              <a href="" @click.prevent='deleteItem(item.id)'>删除</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <script type="text/javascript">
+    /*
+      图书管理-图书列表展示功能
+      注意事项：<a href="" @click.prevent>修改</a>
+      事件绑定时，可以只添加修饰符，而不绑定事件函数
+    */
+    Vue.filter('format', function (value, arg) {
+      function dateFormat(date, format) {
+        if (typeof date === "string") {
+          var mts = date.match(/(\/Date\((\d+)\)\/)/);
+          if (mts && mts.length >= 3) {
+            date = parseInt(mts[2]);
+          }
+        }
+        date = new Date(date);
+        if (!date || date.toUTCString() == "Invalid Date") {
+          return "";
+        }
+        var map = {
+          "M": date.getMonth() + 1, //月份 
+          "d": date.getDate(), //日 
+          "h": date.getHours(), //小时 
+          "m": date.getMinutes(), //分 
+          "s": date.getSeconds(), //秒 
+          "q": Math.floor((date.getMonth() + 3) / 3), //季度 
+          "S": date.getMilliseconds() //毫秒 
+        };
+
+        format = format.replace(/([yMdhmsqS])+/g, function (all, t) {
+          var v = map[t];
+          if (v !== undefined) {
+            if (all.length > 1) {
+              v = '0' + v;
+              v = v.substr(v.length - 2);
+            }
+            return v;
+          } else if (t === 'y') {
+            return (date.getFullYear() + '').substr(4 - all.length);
+          }
+          return all;
+        });
+        return format;
+      }
+      return dateFormat(value, arg);
+    })
+    const vm = new Vue({
+      el: '#app',
+      data: {
+        // 默认为false可以编辑
+        flag: false,
+        subString: false,
+        id: '',
+        name: '',
+        books: []
+      },
+      methods: {
+        handle: function () {
+          // 通过flag来区别是编辑还是添加
+          if (this.flag) {
+            //如果为true表示是修改，遍历books里面的数据
+            this.books.some(item => {
+              //判断数据里面的id属性是否等于input框里的this.id
+              if (item.id === this.id) {
+                //如果等于的话，就将this.name的值赋值给item.name
+                item.name = this.name
+                //some只要找到了一条满足的数据，就会返回true，终止循环
+                return true
+              }
+            })
+            //将flag值修改为false，
+            this.flag = false
+          } else {
+            //如果flag为false表示添加图书
+            //定义一个空的图书对象
+            const book = {}
+            book.id = this.id
+            book.name = this.name
+            // 获取到当前系统的日期和时间
+            book.date = new Date().getTime()
+            //将这个图书对象添加到books对象里
+            this.books.push(book)
+          }
+          //添加完成后，清空input输入框
+          this.id = ''
+          this.name = ''
+        },
+        // 点击修改时，将列表里的id和name值作为实参传入 
+        Edit: function (id, name) {
+          // 点击修改时，id的输入框修改为true禁用
+          this.flag = true
+          this.id = id
+          this.name = name
+        },
+        // 将item.id作为实参传入
+        deleteItem: function (id) {
+          // // 查找books对象里面的数据，item.id是否等于传入的形参
+          // let index = this.books.findIndex(item => item.id == id)
+          // //splice(index,1)表示删除下标为index的一个元素
+          // this.books.splice(index, 1)
+          //filter查找books里面所有的数据，数据的id不等于传入的id值就保留
+          this.books = this.books.filter(item => item.id != id)
+        }
+      },
+      //局部自定义指令
+      directives: {
+        focus: {
+          inserted: function (el) {
+            //元素的获取焦点的方法
+            el.focus()
+          }
+        }
+      },
+      //计算属性，用于判断
+      computed: {
+        total: function () {
+          //返回books对象的长度
+          return this.books.length
+        }
+      },
+      watch: {
+        // newName表示输入框里的内容
+        name: function (newName) {
+          // console.log(newName);
+          // console.log(this.name);
+          let flag = this.books.some(item => item.name == newName)
+          this.subString = flag
+
+
+        }
+      },
+      created() {
+        this.books = [{
+          id: 1,
+          name: '三国演义',
+          date: 1605780421047
+        }, {
+          id: 2,
+          name: '水浒传',
+          date: 1605780423047
+        }, {
+          id: 3,
+          name: '红楼梦',
+          date: 1605780425047
+        }, {
+          id: 4,
+          name: '西游记',
+          date: 1605780427047
+        }];
+      },
+
+    });
+  </script>
+</body>
+
+</html>

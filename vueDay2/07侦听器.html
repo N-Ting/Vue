@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>
+            <span>名：</span>
+            <span>
+                <input type="text" v-model='firstName'>
+            </span>
+        </div>
+        <div>
+            <span>姓：</span>
+            <span>
+                <input type="text" v-model='lastName'>
+            </span>
+        </div>
+        <div>{{fullName}}</div>
+    </div>
+    <script>
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                firstName: 'Jim',
+                lastName: 'Green',
+                // fullName: 'Jim Green'//使用computed可以不用写fullName这行
+            },
+            methods: {
+
+            },
+            computed: {
+                fullName: function (val) {
+                    return this.firstName + ' ' + this.lastName
+                }
+            },
+            /*  watch: {
+                 // val表示输入框里新变化的数据
+                 firstName: function (val) {
+                     this.fullName = val + ' ' + this.lastName
+                 },
+                 lastName: function (val) {
+                     this.fullName = this.firstName + ' ' + val
+                 }
+             } */
+        })
+    </script>
+</body>
+
+</html>

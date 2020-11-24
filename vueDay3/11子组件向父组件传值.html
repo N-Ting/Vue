@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- 在父组件需要改变的标签上绑定样式 在子组件里点击按钮来控制文本的大小 -->
+        <div :style='{fontSize:fontSize+"px"}'>{{msg}}</div>
+        <!-- @englarge-text表示事件监听 通过$event获取到值（代表真实传过来的值），在把它传递给handle-->
+        <menu-item :parr='parr' @englarge-text='handle($event)'></menu-item>
+    </div>
+    <script>
+        /* 
+            子组件向父组件传值-基本用法
+            props传递数据原则：单向数据流
+            点击按钮，向parr数组里添加数据
+            通过第二个参数传值
+         */
+        Vue.component('menu-item', {
+            props: ['parr'],
+            template: `
+                <div>
+                    <ul>
+                    <li :key='index' v-for='(item,index) in parr'>{{item}}</li>
+                    </ul>
+                    <button @click='parr.push("lemon")'>点击</button>
+                    <button @click='$emit("englarge-text",5)'>扩大父组件中字体大小</button>
+                </div>
+            `
+        })
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                msg: '父组件里的内容',
+                parr: ['apple', 'orange', 'banana'],
+                fontSize: 10
+            },
+            methods: {
+                // val作为形参接收$event
+                handle: function (val) {
+                    // 扩大字体大小
+                    // val这个值是由子组件传递过来的而不是由父组件写死的
+                    this.fontSize += val
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

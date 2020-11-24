@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>{{pmsg}}</div>
+        <!-- 在html中大小写不敏感 所以不能用menuTitle 需要用短横线来进行取代 -->
+        <menu-item :menu-title='ptitle'></menu-item>
+    </div>
+    <script>
+        /* 
+            父组件向子组件传值--属性名规则
+         */
+        Vue.component('menu-item', {
+            props: ['menuTitle'],
+            // 在字符串模块中可以使用驼峰式
+            template: `<div>{{menuTitle}}</div>`
+        })
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                pmsg: '父组件中内容',
+                ptitle: '动态绑定属性'
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

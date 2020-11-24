@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>{{pmsg}}</div>
+        <!-- 如果希望pnum是原始的数值就要加上冒号 pboo不加:属于字符串类型 -->
+        <menu-item :pstr="pstr" :pnum='12' pboo='true' :parr='parr' :pobj='pobj'></menu-item>
+    </div>
+    <script>
+        /* 
+            父组件向子组件传值--props属性名类型
+         */
+        Vue.component('menu-item', {
+            props: ['pstr', 'pnum', 'pboo', 'parr', 'pobj'],
+            template: `<div>
+                <div>{{pstr}}</div>
+                <div>{{12+pnum}}</div>
+                <div>{{typeof pboo}}</div>
+                <ul>
+                    <li :key='index' v-for='(item,index) in parr'>{{item}}</li>
+                </ul>
+                <div>
+                    <span>{{pobj.name}}</span>
+                    <span>{{pobj.age}}</span>
+                </div>
+            </div>`
+        })
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                pmsg: '是谁谁谁？？？',
+                // 父组件传入一个字符串
+                pstr: 'hello',
+                parr: ['apple', 'orange', 'lemon'],
+                pobj: {
+                    name: 'zhangsan',
+                    age: 18
+                }
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

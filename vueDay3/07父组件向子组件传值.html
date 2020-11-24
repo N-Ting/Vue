@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vue html demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div>{{pmsg}}</div>
+        <!-- 使用title属性传递具体的值 -->
+        <!-- 没有传递content这个属性 所以打印undefined-->
+        <menu-item title='来自父组件具体的值'></menu-item>
+        <!-- 动态绑定title属性 -->
+        <menu-item :title='pmsg' content='hello'></menu-item>
+    </div>
+    <script>
+        /* 
+            父组件向子组件传值
+         */
+        Vue.component('menu-item', {
+            //使用props接收父组件传来的值
+            props: ['title', 'content'],
+            data: function () {
+                return {
+                    msg: '子组件本身的数据'
+                }
+            },
+            template: `<div>{{msg+'--------'+title+'----'+content}}</div`
+        })
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                pmsg: '父组件中内容'
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>
